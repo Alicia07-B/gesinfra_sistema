@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Menu Principal - GesInfra Web{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- MÓDULO CALIFICACIONES -->
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-primary stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">CALIFICACIONES</h6>
+                        <h3 class="mb-0">{{ estudiantes_count|default:"0" }}</h3>
+                        <small>Estudiantes registrados</small>
+                    </div>
+                    <i class="fas fa-graduation-cap fa-3x"></i>
+                </div>
+                <div class="mt-3">
+                    <a href="{% url 'calificaciones:lista_estudiantes' %}" class="text-white">
+                        <i class="fas fa-users me-1"></i>{{ calificaciones_count|default:"0" }} Calificaciones
+                    </a>
+                </div>
+                <a href="/calificaciones/estudiantes/" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MÓDULO INVENTARIO -->
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-warning stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">INVENTARIO</h6>
+                        <h3 class="mb-0">{{ equipos_count|default:"0" }}</h3>
+                        <small>Equipos registrados</small>
+                    </div>
+                    <i class="fas fa-laptop fa-3x"></i>
+                </div>
+                <div class="mt-3">
+                    <a href="/inventario/mantenimientos/" class="text-white">
+                        <i class="fas fa-tools me-1"></i>{{ mantenimientos_count|default:"0" }} Mantenimientos
+                    </a>
+                </div>
+                <a href="/inventario/" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MÓDULO ACCESIBILIDAD -->
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-success stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">ACCESIBILIDAD</h6>
+                        <h3 class="mb-0">{{ encuestas_count|default:"0" }}</h3>
+                        <small>Encuestas realizadas</small>
+                    </div>
+                    <i class="fas fa-universal-access fa-3x"></i>
+                </div>
+                <div class="mt-3">
+                    <a href="/accesibilidad/instituciones/" class="text-white">
+                        <i class="fas fa-school me-1"></i>{{ instituciones_count|default:"0" }} Instituciones
+                    </a>
+                </div>
+                <a href="/accesibilidad/" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECCIÓN DE ACCIONES RÁPIDAS POR MÓDULO -->
+<div class="row mt-4">
+    <!-- Acciones Calificaciones -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Acciones Calificaciones</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'calificaciones:agregar_estudiante' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>Nuevo Estudiante
+                    </a>
+                    <a href="{% url 'calificaciones:agregar_calificacion' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Nueva Calificación
+                    </a>
+                    <a href="{% url 'calificaciones:boleta_calificaciones' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-file-pdf me-2"></i>Generar Boletas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Acciones Inventario -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h6 class="mb-0"><i class="fas fa-laptop me-2"></i>Acciones Inventario</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/inventario/agregar/" class="btn btn-outline-warning">
+                        <i class="fas fa-plus-circle me-2"></i>Nuevo Equipo
+                    </a>
+                    <a href="/inventario/mantenimientos/nuevo/" class="btn btn-outline-warning">
+                        <i class="fas fa-tools me-2"></i>Nuevo Mantenimiento
+                    </a>
+                    <a href="/inventario/reporte/" class="btn btn-outline-warning">
+                        <i class="fas fa-chart-bar me-2"></i>Reporte Inventario
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Acciones Accesibilidad -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="fas fa-universal-access me-2"></i>Acciones Accesibilidad</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/accesibilidad/encuestas/nueva/" class="btn btn-outline-success">
+                        <i class="fas fa-clipboard-check me-2"></i>Nueva Encuesta
+                    </a>
+                    <a href="/accesibilidad/instituciones/nueva/" class="btn btn-outline-success">
+                        <i class="fas fa-school me-2"></i>Nueva Institución
+                    </a>
+                    <a href="/accesibilidad/reportes/" class="btn btn-outline-success">
+                        <i class="fas fa-chart-pie me-2"></i>Ver Reportes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ACTIVIDAD RECIENTE -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Actividad Reciente</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% if actividades %}
+                        {% for actividad in actividades %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">
+                                    {% if 'calificaciones' in actividad.modulo %}
+                                        <span class="badge bg-primary">CALIFICACIONES</span>
+                                    {% elif 'inventario' in actividad.modulo %}
+                                        <span class="badge bg-warning text-dark">INVENTARIO</span>
+                                    {% elif 'accesibilidad' in actividad.modulo %}
+                                        <span class="badge bg-success">ACCESIBILIDAD</span>
+                                    {% endif %}
+                                    {{ actividad.descripcion }}
+                                </h6>
+                                <small>{{ actividad.fecha|timesince }} ago</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3">No hay actividad reciente</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Menu Principal cargado correctamente');
+    
+    // Animación para las tarjetas al cargar
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+});
+</script>
+{% endblock %}
