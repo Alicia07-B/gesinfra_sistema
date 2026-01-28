@@ -1,0 +1,84 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block page_actions %}
+<div class="d-flex">
+    <!-- Buscador -->
+    <form method="GET" class="me-3">
+        <div class="input-group">
+            <input type="text" class="form-control" name="q" placeholder="Buscar estudiante..." 
+                   value="{{ busqueda }}">
+            <button class="btn btn-outline-primary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+    
+    <!-- Botón Agregar -->
+    <a href="{% url 'calificaciones:agregar_estudiante' %}" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i> Nuevo Estudiante
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover data-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre Completo</th>
+                        <th>Cédula</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Fecha Registro</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for estudiante in estudiantes %}
+                    <tr>
+                        <td>{{ estudiante.codigo }}</td>
+                        <td>{{ estudiante.nombre_completo }}</td>
+                        <td>{{ estudiante.cedula }}</td>
+                        <td>{{ estudiante.email }}</td>
+                        <td>{{ estudiante.telefono|default:"-" }}</td>
+                        <td>{{ estudiante.fecha_registro|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if estudiante.activo %}
+                            <span class="badge bg-success">Activo</span>
+                            {% else %}
+                            <span class="badge bg-danger">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'calificaciones:editar_estudiante' estudiante.id_estudiante %}" 
+                                   class="btn btn-outline-primary" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'calificaciones:eliminar_estudiante' estudiante.id_estudiante %}" 
+                                   class="btn btn-outline-danger" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-info" title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            No hay estudiantes registrados
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

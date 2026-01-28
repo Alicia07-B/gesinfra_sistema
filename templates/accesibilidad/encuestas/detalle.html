@@ -1,0 +1,150 @@
+<!-- templates/accesibilidad/encuestas/detalle.html -->
+{% extends 'base.html' %}
+
+{% block title %}Detalle de Encuesta{% endblock %}
+
+{% block page_title %}
+    <i class="fas fa-file-alt me-2"></i>Encuesta #{{ encuesta.id }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Información General</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Institución:</strong> {{ encuesta.institucion.nombre_institucion }}</p>
+                            <p><strong>AMIE:</strong> {{ encuesta.institucion.codigo_amie }}</p>
+                            <p><strong>Fecha Encuesta:</strong> {{ encuesta.fecha_encuesta|date:"d/m/Y" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Encuestador:</strong> {{ encuesta.encuestador|default:"No especificado" }}</p>
+                            <p><strong>Cargo:</strong> {{ encuesta.cargo_encuestador|default:"No especificado" }}</p>
+                            <p><strong>Fecha Registro:</strong> {{ encuesta.fecha_registro|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Barreras Físicas -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">Barreras Físicas</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="5%">N°</th>
+                                    <th width="65%">Pregunta</th>
+                                    <th width="30%">Respuesta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pregunta in preguntas_fisicas %}
+                                <tr>
+                                    <td class="text-center">{{ pregunta.numero }}</td>
+                                    <td>{{ pregunta.texto }}</td>
+                                    <td class="text-center">
+                                        <span class="badge 
+                                            {% if pregunta.respuesta == 'SIEMPRE' %}bg-success
+                                            {% elif pregunta.respuesta == 'CASI_SIEMPRE' %}bg-info
+                                            {% elif pregunta.respuesta == 'AVECES' %}bg-warning
+                                            {% elif pregunta.respuesta == 'CASI_NUNCA' %}bg-danger
+                                            {% elif pregunta.respuesta == 'NUNCA' %}bg-dark
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ pregunta.respuesta|default:"No aplica" }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Barreras Tecnológicas -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Barreras Tecnológicas</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="5%">N°</th>
+                                    <th width="65%">Pregunta</th>
+                                    <th width="30%">Respuesta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pregunta in preguntas_tecnologicas %}
+                                <tr>
+                                    <td class="text-center">{{ pregunta.numero }}</td>
+                                    <td>{{ pregunta.texto }}</td>
+                                    <td class="text-center">
+                                        <span class="badge 
+                                            {% if pregunta.respuesta == 'SIEMPRE' %}bg-success
+                                            {% elif pregunta.respuesta == 'CASI_SIEMPRE' %}bg-info
+                                            {% elif pregunta.respuesta == 'AVECES' %}bg-warning
+                                            {% elif pregunta.respuesta == 'CASI_NUNCA' %}bg-danger
+                                            {% elif pregunta.respuesta == 'NUNCA' %}bg-dark
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ pregunta.respuesta|default:"No aplica" }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Observaciones -->
+            {% if encuesta.observaciones or encuesta.recomendaciones %}
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Observaciones y Recomendaciones</h4>
+                </div>
+                <div class="card-body">
+                    {% if encuesta.observaciones %}
+                    <h5>Observaciones:</h5>
+                    <p>{{ encuesta.observaciones }}</p>
+                    {% endif %}
+                    
+                    {% if encuesta.recomendaciones %}
+                    <h5>Recomendaciones:</h5>
+                    <p>{{ encuesta.recomendaciones }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Acciones</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'lista_encuestas' %}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                    </a>
+                    <a href="{% url 'seleccionar_institucion' %}" class="btn btn-success w-100 mb-2">
+                        <i class="fas fa-plus me-2"></i>Nueva Encuesta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

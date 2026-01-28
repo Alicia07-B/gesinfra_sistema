@@ -1,0 +1,230 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        border-left: 3px solid #4e73df;
+        padding-left: 15px;
+        margin-bottom: 25px;
+    }
+    .form-section-title {
+        color: #4e73df;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    .day-checkbox {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 8px;
+    }
+    .day-checkbox .form-check {
+        background: #f8f9fc;
+        border: 1px solid #e3e6f0;
+        border-radius: 5px;
+        padding: 8px 12px;
+        min-width: 80px;
+    }
+    .cupo-info {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    .preview-card {
+        border: 2px dashed #e3e6f0;
+        border-radius: 8px;
+        padding: 20px;
+        background: #f8f9fc;
+    }
+    /* Estilo para select desplegable */
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list-ol me-2"></i>{{ titulo }}
+                </h5>
+                {% if curso %}
+                <small class="text-light">Código: {{ curso.asignatura.codigo }}-{{ curso.seccion }}</small>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <form method="post" id="cursoForm">
+                    {% csrf_token %}
+                    
+                    <!-- Información Básica del Curso -->
+                    <div class="form-section">
+                        <h6 class="form-section-title">
+                            <i class="fas fa-info-circle me-2"></i>Información Básica
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.asignatura.id_for_label }}" class="form-label">
+                                    {{ form.asignatura.label }} *
+                                </label>
+                                {{ form.asignatura }}
+                                {% if form.asignatura.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.asignatura.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- CAMBIO: Período Académico como desplegable -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.periodo_academico.id_for_label }}" class="form-label">
+                                    {{ form.periodo_academico.label }} *
+                                </label>
+                                {{ form.periodo_academico }}
+                                {% if form.periodo_academico.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.periodo_academico.errors }}
+                                </div>
+                                {% endif %}
+                                <div class="cupo-info">
+                                    <i class="fas fa-info-circle"></i> Seleccione el período académico activo
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.docente.id_for_label }}" class="form-label">
+                                    {{ form.docente.label }}
+                                </label>
+                                <div class="input-group">
+                                    {{ form.docente }}
+                                    <button type="button" class="btn btn-outline-primary" 
+                                            data-bs-toggle="modal" data-bs-target="#docentesModal">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                {% if form.docente.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.docente.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- CAMBIO: Sección como desplegable -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.seccion.id_for_label }}" class="form-label">
+                                    {{ form.seccion.label }} *
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Sección</span>
+                                    {{ form.seccion }}
+                                </div>
+                                {% if form.seccion.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.seccion.errors }}
+                                </div>
+                                {% endif %}
+                                <div class="cupo-info">
+                                    <i class="fas fa-info-circle"></i> Seleccione la sección del curso
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Resto del formulario se mantiene igual -->
+                    <!-- ... (mantén todo el resto del formulario sin cambios) ... -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Inicializar Select2 para mejor experiencia en desplegables
+        $('#id_periodo_academico').select2({
+            placeholder: "Seleccione un período académico",
+            allowClear: true,
+            width: '100%'
+        });
+        
+        $('#id_seccion').select2({
+            placeholder: "Seleccione una sección",
+            allowClear: false,
+            width: '100%',
+            minimumResultsForSearch: -1 // Ocultar búsqueda si hay pocas opciones
+        });
+        
+        // Si quieres que sección se cargue dinámicamente según asignatura
+        $('#id_asignatura').on('change', function() {
+            const asignaturaId = $(this).val();
+            if (asignaturaId) {
+                // AJAX para obtener secciones ocupadas
+                $.ajax({
+                    url: '/api/cursos/secciones-disponibles/',
+                    method: 'GET',
+                    data: {
+                        'asignatura_id': asignaturaId,
+                        'periodo_academico_id': $('#id_periodo_academico').val()
+                    },
+                    success: function(data) {
+                        if (data.secciones_ocupadas) {
+                            // Deshabilitar secciones ya ocupadas
+                            $('#id_seccion option').each(function() {
+                                if (data.secciones_ocupadas.includes($(this).val())) {
+                                    $(this).prop('disabled', true)
+                                        .text($(this).text() + ' (Ocupada)');
+                                } else {
+                                    $(this).prop('disabled', false)
+                                        .text($(this).text().replace(' (Ocupada)', ''));
+                                }
+                            });
+                            
+                            // Seleccionar primera sección disponible
+                            $('#id_seccion option:not(:disabled)').first().prop('selected', true);
+                            $('#id_seccion').trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+        
+        // Actualizar vista previa (modificar esta función)
+        function actualizarVistaPrevia() {
+            const asignaturaSelect = $('#id_asignatura');
+            const seccionSelect = $('#id_seccion');
+            const periodoSelect = $('#id_periodo_academico');
+            const docenteSelect = $('#id_docente');
+            const cupoMaximo = $('#id_cupo_maximo').val() || '0';
+            const cupoActual = $('#id_cupo_actual').val() || '0';
+            const horarioInput = $('#id_horario').val();
+            
+            // Obtener texto de las opciones seleccionadas
+            const asignaturaTexto = asignaturaSelect.find('option:selected').text() || '-';
+            const periodoTexto = periodoSelect.find('option:selected').text() || '-';
+            const docenteTexto = docenteSelect.find('option:selected').text() || 'Sin asignar';
+            const seccionTexto = seccionSelect.find('option:selected').text() || '-';
+            
+            $('#previewCodigo').text(asignaturaTexto.split(' - ')[0] || '-');
+            $('#previewSeccion').text(seccionTexto);
+            $('#previewPeriodo').text(periodoTexto);
+            $('#previewDocente').text(docenteTexto);
+            $('#previewCupo').text(`${cupoActual}/${cupoMaximo}`);
+            $('#previewHorario').text(horarioInput || 'No especificado');
+        }
+        
+        // Event listeners para cambios en selects
+        $('#id_periodo_academico, #id_seccion').on('change', function() {
+            actualizarVistaPrevia();
+        });
+        
+        // Resto del código JavaScript se mantiene igual
+        // ... (mantén el resto del JavaScript sin cambios) ...
+    });
+</script>
+{% endblock %}

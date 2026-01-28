@@ -1,0 +1,161 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block content %}
+<div class="row">
+    <!-- Reporte Individual -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-graduate me-2"></i>Reporte Individual
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'calificaciones:boleta_calificaciones' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="estudiante" class="form-label">Seleccionar Estudiante *</label>
+                        <select name="estudiante" id="estudiante" class="form-select" required>
+                            <option value="">Seleccione un estudiante</option>
+                            {% for estudiante in estudiantes %}
+                            <option value="{{ estudiante.id_estudiante }}">
+                                {{ estudiante.codigo }} - {{ estudiante.nombre_completo }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="periodo" class="form-label">Seleccionar Período *</label>
+                        <select name="periodo" id="periodo" class="form-select" required>
+                            <option value="">Seleccione un período</option>
+                            {% for periodo in periodos %}
+                            <option value="{{ periodo.id_periodo }}">
+                                {{ periodo.nombre }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-pdf"></i> Generar Boleta
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reporte Grupal -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>Reporte Grupal
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'calificaciones:generar_reporte_grupo_pdf' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="curso_grupal" class="form-label">Seleccionar Curso *</label>
+                        <select name="curso" id="curso_grupal" class="form-select" required>
+                            <option value="">Seleccione un curso</option>
+                            {% for curso in cursos %}
+                            <option value="{{ curso.id_curso }}">
+                                {{ curso.asignatura.codigo }}-{{ curso.seccion }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Reporte</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo_reporte" 
+                                   id="lista_calificaciones" value="calificaciones" checked>
+                            <label class="form-check-label" for="lista_calificaciones">
+                                Lista de Calificaciones
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo_reporte" 
+                                   id="estadisticas" value="estadisticas">
+                            <label class="form-check-label" for="estadisticas">
+                                Estadísticas del Curso
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-chart-bar"></i> Generar Reporte Grupal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas Rápidas -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Estadísticas Rápidas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="card border-primary">
+                            <div class="card-body">
+                                <i class="fas fa-chart-pie fa-2x text-primary mb-2"></i>
+                                <h5>Promedio General</h5>
+                                <h3 class="text-primary">75.5</h3>
+                                <small class="text-muted">Promedio de todas las calificaciones</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="card border-success">
+                            <div class="card-body">
+                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                <h5>Aprobados</h5>
+                                <h3 class="text-success">85%</h3>
+                                <small class="text-muted">Porcentaje de estudiantes aprobados</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="card border-warning">
+                            <div class="card-body">
+                                <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                                <h5>Reprobados</h5>
+                                <h3 class="text-warning">12%</h3>
+                                <small class="text-muted">Porcentaje de estudiantes reprobados</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="card border-danger">
+                            <div class="card-body">
+                                <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
+                                <h5>Incompletos</h5>
+                                <h3 class="text-danger">3%</h3>
+                                <small class="text-muted">Porcentaje de estudiantes incompletos</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

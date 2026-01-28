@@ -1,0 +1,41 @@
+<!-- templates/calificaciones/estudiantes/confirmar_eliminar.html -->
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Estudiante - GesInfra Web{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Confirmar Eliminación</h4>
+            </div>
+            
+            <div class="card-body text-center">
+                <div class="mb-4">
+                    <i class="fas fa-user-slash fa-4x text-danger mb-3"></i>
+                    <h5>¿Estás seguro de eliminar este estudiante?</h5>
+                    <p class="text-muted">Esta acción no se puede deshacer.</p>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>Estudiante:</strong> {{ estudiante.nombres_completos }}<br>
+                    <strong>Cédula:</strong> {{ estudiante.cedula }}
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'calificaciones:lista_estudiantes' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-2"></i>Sí, Eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

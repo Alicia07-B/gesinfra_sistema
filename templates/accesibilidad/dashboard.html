@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}Accesibilidad - Dashboard{% endblock %}
+
+{% block page_title %}
+    <i class="fas fa-universal-access me-2"></i>Módulo de Accesibilidad Educativa
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Estadísticas -->
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-0">{{ total_instituciones|default:"0" }}</h2>
+                            <p class="mb-0">Instituciones</p>
+                        </div>
+                        <i class="fas fa-school fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-0">{{ total_encuestas|default:"0" }}</h2>
+                            <p class="mb-0">Encuestas</p>
+                        </div>
+                        <i class="fas fa-clipboard-check fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Acciones Rápidas -->
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'nueva_institucion' %}" class="card action-card text-decoration-none">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-plus-circle fa-3x text-primary mb-3"></i>
+                                    <h5>Nueva Institución</h5>
+                                    <p class="text-muted">Registrar nueva institución educativa</p>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'seleccionar_institucion' %}" class="card action-card text-decoration-none">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-clipboard-list fa-3x text-success mb-3"></i>
+                                    <h5>Nueva Encuesta</h5>
+                                    <p class="text-muted">Crear encuesta de accesibilidad</p>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'lista_instituciones' %}" class="card action-card text-decoration-none">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-list fa-3x text-info mb-3"></i>
+                                    <h5>Ver Instituciones</h5>
+                                    <p class="text-muted">Listado de instituciones registradas</p>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'lista_encuestas' %}" class="card action-card text-decoration-none">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-chart-bar fa-3x text-warning mb-3"></i>
+                                    <h5>Ver Encuestas</h5>
+                                    <p class="text-muted">Historial de encuestas realizadas</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Últimas Instituciones -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-school me-2"></i>Últimas Instituciones</h5>
+                </div>
+                <div class="card-body">
+                    {% if instituciones %}
+                    <div class="list-group">
+                        {% for institucion in instituciones %}
+                        <a href="{% url 'detalle_institucion' institucion.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ institucion.nombre_institucion }}</h6>
+                                <small>{{ institucion.fecha_registro|date:"d/m/Y" }}</small>
+                            </div>
+                            <small class="text-muted">
+                                <i class="fas fa-id-card me-1"></i>{{ institucion.codigo_amie }} | 
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ institucion.canton }}, {{ institucion.provincia }}
+                            </small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-3">
+                        <p class="text-muted">No hay instituciones registradas</p>
+                        <a href="{% url 'nueva_institucion' %}" class="btn btn-sm btn-primary">
+                            Registrar primera institución
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información del Módulo -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Acerca del Módulo</h5>
+                </div>
+                <div class="card-body">
+                    <h5>Encuesta de Accesibilidad Educativa</h5>
+                    <p>Este módulo permite evaluar las barreras físicas y tecnológicas que afectan la accesibilidad en instituciones educativas.</p>
+                    
+                    <div class="alert alert-secondary">
+                        <h6><i class="fas fa-lightbulb me-2"></i>Características:</h6>
+                        <ul class="mb-0">
+                            <li>Registro de instituciones educativas</li>
+                            <li>Encuestas de barreras físicas (7 criterios)</li>
+                            <li>Encuestas de barreras tecnológicas (7 criterios)</li>
+                            <li>Generación de informes y estadísticas</li>
+                            <li>Seguimiento de recomendaciones</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-card {
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+.action-card {
+    transition: transform 0.2s;
+    height: 100%;
+    border: 1px solid #dee2e6;
+}
+.action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

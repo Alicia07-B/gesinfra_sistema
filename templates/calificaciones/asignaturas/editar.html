@@ -1,0 +1,320 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0 fw-bold">
+                    <i class="fas fa-book me-2"></i>{{ titulo }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate id="asignaturaForm">
+                    {% csrf_token %}
+                    
+                    <!-- Mostrar errores generales -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <!-- Código -->
+                        <div class="col-md-6 mb-3">
+                            <label for="id_codigo" class="form-label fw-semibold">
+                                Código <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="codigo" 
+                                   id="id_codigo" 
+                                   class="form-control {% if form.codigo.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.codigo.value|default:'' }}" 
+                                   placeholder="Ej: MAT-101"
+                                   required>
+                            {% if form.codigo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.codigo.errors.0 }}
+                            </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Código único de identificación</small>
+                        </div>
+                        
+                        <!-- Nombre -->
+                        <div class="col-md-6 mb-3">
+                            <label for="id_nombre" class="form-label fw-semibold">
+                                Nombre <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="nombre" 
+                                   id="id_nombre" 
+                                   class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.nombre.value|default:'' }}" 
+                                   placeholder="Ej: Matemáticas Básicas"
+                                   required>
+                            {% if form.nombre.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.nombre.errors.0 }}
+                            </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Nombre completo de la asignatura</small>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Horas semanales - NOMBRE CORRECTO: horas_semana -->
+                        <div class="col-md-6 mb-3">
+                            <label for="id_horas_semana" class="form-label fw-semibold">
+                                Horas semanales <span class="text-danger">*</span>
+                            </label>
+                            <select name="horas_semana" 
+                                    id="id_horas_semana" 
+                                    class="form-select {% if form.horas_semana.errors %}is-invalid{% endif %}"
+                                    required>
+                                <option value="">Seleccione horas semanales</option>
+                                <option value="2" {% if form.horas_semana.value == "2" %}selected{% endif %}>2 horas</option>
+                                <option value="3" {% if form.horas_semana.value == "3" %}selected{% endif %}>3 horas</option>
+                                <option value="4" {% if form.horas_semana.value == "4" %}selected{% endif %}>4 horas</option>
+                                <option value="5" {% if form.horas_semana.value == "5" %}selected{% endif %}>5 horas</option>
+                                <option value="6" {% if form.horas_semana.value == "6" %}selected{% endif %}>6 horas</option>
+                                <option value="7" {% if form.horas_semana.value == "7" %}selected{% endif %}>7 horas</option>
+                                <option value="8" {% if form.horas_semana.value == "8" %}selected{% endif %}>8 horas</option>
+                                <option value="9" {% if form.horas_semana.value == "9" %}selected{% endif %}>9 horas</option>
+                                <option value="10" {% if form.horas_semana.value == "10" %}selected{% endif %}>10 horas</option>
+                            </select>
+                            {% if form.horas_semana.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.horas_semana.errors.0 }}
+                            </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Carga horaria semanal (2-10 horas)</small>
+                        </div>
+                        
+                        <!-- Curso (opcional, si existe en tu modelo) -->
+                        {% if form.curso %}
+                        <div class="col-md-6 mb-3">
+                            <label for="id_curso" class="form-label fw-semibold">
+                                Curso
+                            </label>
+                            <select name="curso" 
+                                    id="id_curso" 
+                                    class="form-select {% if form.curso.errors %}is-invalid{% endif %}">
+                                <option value="">Seleccione un curso</option>
+                                {% for choice in form.curso.field.choices %}
+                                <option value="{{ choice.0 }}" 
+                                        {% if form.curso.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
+                                    {{ choice.1 }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.curso.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.curso.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Configuración evaluación (opcional) -->
+                    {% if form.configuracionevaluacion %}
+                    <div class="mb-3">
+                        <label for="id_configuracionevaluacion" class="form-label fw-semibold">
+                            Configuración de Evaluación
+                        </label>
+                        <select name="configuracionevaluacion" 
+                                id="id_configuracionevaluacion" 
+                                class="form-select {% if form.configuracionevaluacion.errors %}is-invalid{% endif %}">
+                            <option value="">Seleccione configuración</option>
+                            {% for choice in form.configuracionevaluacion.field.choices %}
+                            <option value="{{ choice.0 }}" 
+                                    {% if form.configuracionevaluacion.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
+                                {{ choice.1 }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.configuracionevaluacion.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.configuracionevaluacion.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <label for="id_descripcion" class="form-label fw-semibold">
+                            Descripción
+                        </label>
+                        <textarea name="descripcion" 
+                                  id="id_descripcion" 
+                                  class="form-control {% if form.descripcion.errors %}is-invalid{% endif %}" 
+                                  rows="4" 
+                                  placeholder="Descripción de los contenidos, objetivos y metodología...">{{ form.descripcion.value|default:'' }}</textarea>
+                        {% if form.descripcion.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.descripcion.errors.0 }}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Máximo 1000 caracteres. <span id="descripcion-counter" class="float-end">0/1000</span>
+                        </small>
+                    </div>
+                    
+                    <!-- Activo -->
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" 
+                                   name="activo" 
+                                   id="id_activo" 
+                                   class="form-check-input" 
+                                   role="switch" 
+                                   {% if form.activo.value %}checked{% endif %}
+                                   {% if not form.activo.value and form.activo.value != False %}checked{% endif %}>
+                            <label for="id_activo" class="form-check-label fw-semibold">
+                                Activa
+                            </label>
+                        </div>
+                        <small class="form-text text-muted ms-4">
+                            La asignatura estará disponible en el sistema
+                        </small>
+                    </div>
+                    
+                    <!-- Botones -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                        <a href="{% url 'calificaciones:lista_asignaturas' %}" 
+                           class="btn btn-outline-secondary me-md-2">
+                            <i class="fas fa-arrow-left me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4" id="submitBtn">
+                            <i class="fas fa-save me-1"></i> Guardar Asignatura
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('asignaturaForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const descripcionField = document.getElementById('id_descripcion');
+        const counter = document.getElementById('descripcion-counter');
+        
+        // Contador de caracteres
+        if (descripcionField && counter) {
+            function updateCounter() {
+                const length = descripcionField.value.length;
+                counter.textContent = `${length}/1000`;
+                if (length > 1000) {
+                    counter.classList.add('text-danger');
+                    descripcionField.classList.add('is-invalid');
+                } else {
+                    counter.classList.remove('text-danger');
+                    descripcionField.classList.remove('is-invalid');
+                }
+            }
+            
+            descripcionField.addEventListener('input', updateCounter);
+            updateCounter();
+        }
+        
+        // Validación antes de enviar
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Validar campos requeridos
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                    
+                    // Mostrar mensaje de error específico
+                    let errorDiv = field.nextElementSibling;
+                    if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+                        errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback d-block';
+                        errorDiv.textContent = 'Este campo es obligatorio';
+                        field.parentNode.appendChild(errorDiv);
+                    }
+                } else {
+                    field.classList.remove('is-invalid');
+                    // Remover mensaje de error si existe
+                    const errorDiv = field.nextElementSibling;
+                    if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                        errorDiv.remove();
+                    }
+                }
+            });
+            
+            // Validar horas_semana
+            const horasField = document.getElementById('id_horas_semana');
+            if (horasField && (!horasField.value || horasField.value === '')) {
+                horasField.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                
+                // Mostrar alerta general
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                alertDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Por favor, complete todos los campos obligatorios.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                // Insertar al principio del form
+                const firstChild = form.firstChild;
+                form.insertBefore(alertDiv, firstChild);
+                
+                // Desplazar al primer error
+                const firstInvalid = form.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus();
+                }
+            } else {
+                // Deshabilitar botón para evitar doble envío
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Guardando...';
+            }
+        });
+        
+        // Remover error al interactuar con campos
+        form.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.classList.contains('is-invalid')) {
+                    this.classList.remove('is-invalid');
+                    const errorDiv = this.nextElementSibling;
+                    if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                        errorDiv.remove();
+                    }
+                }
+            });
+            
+            field.addEventListener('change', function() {
+                if (this.classList.contains('is-invalid')) {
+                    this.classList.remove('is-invalid');
+                    const errorDiv = this.nextElementSibling;
+                    if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                        errorDiv.remove();
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

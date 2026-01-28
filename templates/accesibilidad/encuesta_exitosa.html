@@ -1,0 +1,35 @@
+<!-- templates/accesibilidad/encuesta_exitosa.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center border-success">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0"><i class="fas fa-check-circle fa-2x"></i></h3>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title text-success">¡Encuesta Guardada Exitosamente!</h2>
+                    <p class="card-text lead">
+                        Gracias por completar la encuesta de accesibilidad educativa.
+                        Tu información será utilizada para mejorar las condiciones de accesibilidad en la institución.
+                    </p>
+                    <div class="mt-4">
+                        <a href="{% url 'nueva_encuesta' %}" class="btn btn-primary me-2">
+                            <i class="fas fa-plus"></i> Crear Nueva Encuesta
+                        </a>
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="fas fa-home"></i> Volver al Inicio
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    Fecha: {% now "d/m/Y" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

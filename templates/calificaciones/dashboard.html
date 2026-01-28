@@ -1,0 +1,254 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block content %}
+<div class="row">
+    <!-- Estadísticas -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card students h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Estudiantes
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ total_estudiantes }}
+                        </div>
+                        <div class="mt-2 mb-0 text-muted text-xs">
+                            <span class="text-success mr-2">
+                                <i class="fas fa-check-circle"></i> Activos
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card teachers h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Docentes
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ total_docentes }}
+                        </div>
+                        <div class="mt-2 mb-0 text-muted text-xs">
+                            <span class="text-success mr-2">
+                                <i class="fas fa-check-circle"></i> Disponibles
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chalkboard-teacher fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card subjects h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Asignaturas
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ total_asignaturas }}
+                        </div>
+                        <div class="mt-2 mb-0 text-muted text-xs">
+                            <span class="text-info mr-2">
+                                <i class="fas fa-book"></i> Activas
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-book fa-2x text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card enrollments h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Matrículas
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ total_matriculas }}
+                        </div>
+                        <div class="mt-2 mb-0 text-muted text-xs">
+                            <span class="text-warning mr-2">
+                                <i class="fas fa-clipboard-list"></i> Totales
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Últimos Estudiantes -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    Últimos Estudiantes Registrados
+                </h6>
+                <a href="{% url 'calificaciones:lista_estudiantes' %}" class="btn btn-sm btn-primary">
+                    Ver Todos
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Estudiante</th>
+                                <th>Cédula</th>
+                                <th>Email</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for estudiante in ultimos_estudiantes %}
+                            <tr>
+                                <td>{{ estudiante.codigo }}</td>
+                                <td>{{ estudiante.nombre_completo }}</td>
+                                <td>{{ estudiante.cedula }}</td>
+                                <td>{{ estudiante.email }}</td>
+                                <td>
+                                    {% if estudiante.activo %}
+                                    <span class="badge bg-success">Activo</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No hay estudiantes registrados</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del Período -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    Período Académico Actual
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if periodo_actual %}
+                <div class="text-center mb-4">
+                    <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+                    <h4>{{ periodo_actual.nombre }}</h4>
+                    <p class="text-muted">{{ periodo_actual.descripcion }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="small text-muted mb-1">Fecha de Inicio</label>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-plus text-primary me-2"></i>
+                        <span>{{ periodo_actual.fecha_inicio|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="small text-muted mb-1">Fecha de Fin</label>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-minus text-primary me-2"></i>
+                        <span>{{ periodo_actual.fecha_fin|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="small text-muted mb-1">Estado</label>
+                    <div>
+                        {% if periodo_actual.activo %}
+                        <span class="badge bg-success">Activo</span>
+                        {% else %}
+                        <span class="badge bg-danger">Inactivo</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h5 class="text-muted">No hay período activo</h5>
+                    <p class="small">Configure un período académico activo</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Acciones Rápidas -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Acciones Rápidas</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'calificaciones:agregar_estudiante' %}" 
+                           class="btn btn-outline-primary w-100">
+                            <i class="fas fa-user-plus fa-2x mb-2"></i><br>
+                            Nuevo Estudiante
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'calificaciones:agregar_matricula' %}" 
+                           class="btn btn-outline-success w-100">
+                            <i class="fas fa-clipboard-check fa-2x mb-2"></i><br>
+                            Nueva Matrícula
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'calificaciones:agregar_calificacion' %}" 
+                           class="btn btn-outline-info w-100">
+                            <i class="fas fa-star fa-2x mb-2"></i><br>
+                            Nueva Calificación
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'calificaciones:gestionar_calificaciones' %}" 
+                           class="btn btn-outline-warning w-100">
+                            <i class="fas fa-edit fa-2x mb-2"></i><br>
+                            Gestionar Calificaciones
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

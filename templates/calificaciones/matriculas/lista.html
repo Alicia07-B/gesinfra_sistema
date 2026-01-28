@@ -1,0 +1,127 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block page_actions %}
+<div class="d-flex">
+    <form method="GET" class="me-3">
+        <div class="row g-2">
+            <div class="col-auto">
+                <select name="curso" class="form-select">
+                    <option value="">Todos los cursos</option>
+                    {% for curso in cursos %}
+                    <option value="{{ curso.id_curso }}" 
+                            {% if curso_seleccionado == curso.id_curso|stringformat:"i" %}selected{% endif %}>
+                        {{ curso.asignatura.codigo }}-{{ curso.seccion }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <select name="estado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="matriculado" {% if estado_seleccionado == 'matriculado' %}selected{% endif %}>Matriculado</option>
+                    <option value="aprobado" {% if estado_seleccionado == 'aprobado' %}selected{% endif %}>Aprobado</option>
+                    <option value="reprobado" {% if estado_seleccionado == 'reprobado' %}selected{% endif %}>Reprobado</option>
+                    <option value="incompleto" {% if estado_seleccionado == 'incompleto' %}selected{% endif %}>Incompleto</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <select name="periodo" class="form-select">
+                    <option value="">Todos los períodos</option>
+                    {% for periodo in periodos %}
+                    <option value="{{ periodo.id_periodo }}" 
+                            {% if periodo_seleccionado == periodo.id_periodo|stringformat:"i" %}selected{% endif %}>
+                        {{ periodo.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+                <a href="{% url 'calificaciones:lista_matriculas' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i>
+                </a>
+            </div>
+        </div>
+    </form>
+    <a href="{% url 'calificaciones:agregar_matricula' %}" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i> Nueva Matrícula
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Estudiante</th>
+                        <th>Curso</th>
+                        <th>Período</th>
+                        <th>Fecha Matrícula</th>
+                        <th>Nota Final</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for matricula in matriculas %}
+                    <tr>
+                        <td>#{{ matricula.id_matricula }}</td>
+                        <td>{{ matricula.estudiante.nombre_completo }}</td>
+                        <td>{{ matricula.curso.asignatura.codigo }}-{{ matricula.curso.seccion }}</td>
+                        <td>{{ matricula.curso.periodo.nombre }}</td>
+                        <td>{{ matricula.fecha_matricula|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if matricula.nota_final %}
+                            <span class="badge {% if matricula.nota_final >= 60 %}bg-success{% elif matricula.nota_final >= 40 %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ matricula.nota_final }}
+                            </span>
+                            {% else %}
+                            <span class="badge bg-secondary">Sin calificar</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if matricula.estado == 'matriculado' %}
+                            <span class="badge bg-primary">Matriculado</span>
+                            {% elif matricula.estado == 'aprobado' %}
+                            <span class="badge bg-success">Aprobado</span>
+                            {% elif matricula.estado == 'reprobado' %}
+                            <span class="badge bg-warning">Reprobado</span>
+                            {% else %}
+                            <span class="badge bg-danger">Incompleto</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'calificaciones:editar_matricula' matricula.id_matricula %}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'calificaciones:eliminar_matricula' matricula.id_matricula %}" 
+                                   class="btn btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            No hay matrículas registradas
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

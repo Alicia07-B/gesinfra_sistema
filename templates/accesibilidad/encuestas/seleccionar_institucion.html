@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Seleccionar Institución{% endblock %}
+
+{% block page_title %}
+    <i class="fas fa-clipboard-list me-2"></i>Seleccionar Institución para Encuesta
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Paso 1: Seleccionar Institución</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Seleccione la institución educativa para la cual desea crear la encuesta:</p>
+                    
+                    {% if instituciones %}
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="list-group mb-4">
+                            {% for institucion in instituciones %}
+                            <div class="list-group-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                           name="institucion_id" 
+                                           value="{{ institucion.id }}"
+                                           id="inst_{{ institucion.id }}"
+                                           required>
+                                    <label class="form-check-label" for="inst_{{ institucion.id }}">
+                                        <h5>{{ institucion.nombre_institucion }}</h5>
+                                        <p class="mb-1">
+                                            <small class="text-muted">
+                                                <i class="fas fa-id-card me-1"></i> AMIE: {{ institucion.codigo_amie }}
+                                            </small>
+                                        </p>
+                                        <p class="mb-0">
+                                            <small class="text-muted">
+                                                <i class="fas fa-map-marker-alt me-1"></i> {{ institucion.canton }}, {{ institucion.provincia }}
+                                            </small>
+                                        </p>
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'dashboard_accesibilidad' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-arrow-right me-2"></i>Continuar con la Encuesta
+                            </button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-warning text-center py-4">
+                        <i class="fas fa-school fa-3x mb-3"></i>
+                        <h4>No hay instituciones registradas</h4>
+                        <p>Debe registrar al menos una institución educativa antes de crear una encuesta.</p>
+                        <a href="{% url 'nueva_institucion' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Registrar Nueva Institución
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

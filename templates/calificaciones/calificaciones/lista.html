@@ -1,0 +1,109 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block page_actions %}
+<div class="d-flex">
+    <form method="GET" class="me-3">
+        <div class="row g-2">
+            <div class="col-auto">
+                <select name="curso" class="form-select">
+                    <option value="">Todos los cursos</option>
+                    {% for curso in cursos %}
+                    <option value="{{ curso.id_curso }}" 
+                            {% if curso_seleccionado == curso.id_curso|stringformat:"i" %}selected{% endif %}>
+                        {{ curso.asignatura.codigo }}-{{ curso.seccion }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <select name="estudiante" class="form-select">
+                    <option value="">Todos los estudiantes</option>
+                    {% for estudiante in estudiantes %}
+                    <option value="{{ estudiante.id_estudiante }}"
+                            {% if estudiante_seleccionado == estudiante.id_estudiante|stringformat:"i" %}selected{% endif %}>
+                        {{ estudiante.nombre_completo }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+                <a href="{% url 'calificaciones:lista_calificaciones' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i>
+                </a>
+            </div>
+        </div>
+    </form>
+    <a href="{% url 'calificaciones:agregar_calificacion' %}" class="btn btn-primary me-2">
+        <i class="fas fa-plus-circle"></i> Nueva Calificación
+    </a>
+    <a href="{% url 'calificaciones:gestionar_calificaciones' %}" class="btn btn-success">
+        <i class="fas fa-edit"></i> Gestionar Masivamente
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Estudiante</th>
+                        <th>Evaluación</th>
+                        <th>Curso</th>
+                        <th>Nota</th>
+                        <th>Nota Ponderada</th>
+                        <th>Fecha</th>
+                        <th>Registrado por</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for calificacion in calificaciones %}
+                    <tr>
+                        <td>#{{ calificacion.id_calificacion }}</td>
+                        <td>{{ calificacion.matricula.estudiante.nombre_completo }}</td>
+                        <td>{{ calificacion.configuracion.nombre_evaluacion }}</td>
+                        <td>{{ calificacion.matricula.curso.asignatura.codigo }}-{{ calificacion.matricula.curso.seccion }}</td>
+                        <td>
+                            <span class="badge {% if calificacion.nota >= 60 %}bg-success{% elif calificacion.nota >= 40 %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ calificacion.nota }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">
+                                {{ calificacion.nota_ponderada }}
+                            </span>
+                        </td>
+                        <td>{{ calificacion.fecha_registro|date:"d/m/Y H:i" }}</td>
+                        <td>{{ calificacion.registrado_por.username|default:"Sistema" }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'calificaciones:editar_calificacion' calificacion.id_calificacion %}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center">
+                            No hay calificaciones registradas
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

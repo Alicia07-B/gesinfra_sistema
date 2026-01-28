@@ -1,0 +1,210 @@
+<!-- templates/accesibilidad/encuestas/crear.html -->
+{% extends 'base.html' %}
+
+{% block title %}Nueva Encuesta de Accesibilidad{% endblock %}
+
+{% block page_title %}
+    <i class="fas fa-clipboard-check me-2"></i>Nueva Encuesta - {{ institucion.nombre_institucion }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">Información General</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-secondary">
+                        <h5><i class="fas fa-school me-2"></i>Institución: {{ institucion.nombre_institucion }}</h5>
+                        <p class="mb-0">AMIE: {{ institucion.codigo_amie }} | {{ institucion.canton }}, {{ institucion.provincia }}</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Errores en el formulario:</strong>
+                            <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="id_fecha_encuesta" class="form-label">Fecha de Encuesta *</label>
+                                {{ form.fecha_encuesta }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="id_encuestador" class="form-label">Nombre del Encuestador</label>
+                                {{ form.encuestador }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="id_cargo_encuestador" class="form-label">Cargo</label>
+                                {{ form.cargo_encuestador }}
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h4 class="mb-3 text-primary"><i class="fas fa-wheelchair me-2"></i>Barreras Físicas</h4>
+                        <p class="text-muted mb-4">Esta sección evalúa las barreras físicas que afectan el acceso, la movilidad y la permanencia de todas las personas en la institución educativa.</p>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="5%">N°</th>
+                                        <th width="50%">Pregunta</th>
+                                        <th width="45%">Respuesta</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center align-middle">1</td>
+                                        <td class="align-middle">Los accesos principales al edificio (puertas, rampas) son fáciles de usar para todas las personas (ej.: con movilidad reducida, con carriola, etc.).</td>
+                                        <td>{{ form.p1_accesos }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">2</td>
+                                        <td class="align-middle">Los pasillos, aulas y espacios comunes están libres de obstáculos y son lo suficientemente amplios para el tránsito de todas las personas.</td>
+                                        <td>{{ form.p2_pasillos }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">3</td>
+                                        <td class="align-middle">Existen y están disponibles rampas o elevadores donde hay desniveles (escaleras).</td>
+                                        <td>{{ form.p3_rampas }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">4</td>
+                                        <td class="align-middle">Los baños son accesibles, cuentan con señales claras y barras de apoyo, si corresponde.</td>
+                                        <td>{{ form.p4_banos }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">5</td>
+                                        <td class="align-middle">Las aulas tienen una iluminación y ventilación adecuadas para el aprendizaje.</td>
+                                        <td>{{ form.p5_puertas }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">6</td>
+                                        <td class="align-middle">La señalización (letreros, pictogramas) en el edificio es clara y ayuda a orientarse con facilidad.</td>
+                                        <td>{{ form.p6_senialetica }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">7</td>
+                                        <td class="align-middle">El mobiliario (sillas, mesas) es ajustable o adecuado para diferentes tallas y necesidades físicas de los estudiantes.</td>
+                                        <td>{{ form.p7_iluminacion }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h4 class="mb-3 text-success"><i class="fas fa-laptop me-2"></i>Barreras Tecnológicas</h4>
+                        <p class="text-muted mb-4">Esta sección evalúa las barreras tecnológicas que afectan el acceso, participación y aprendizaje de los estudiantes en la institución educativa.</p>
+                        
+                        <div class="alert alert-secondary mb-4">
+                            <h6><i class="fas fa-lightbulb me-2"></i>Consideraciones para evaluar:</h6>
+                            <ul class="mb-0">
+                                <li>Disponibilidad y accesibilidad de equipos tecnológicos</li>
+                                <li>Conectividad a internet y calidad de la misma</li>
+                                <li>Software y plataformas educativas accesibles</li>
+                                <li>Capacitación digital de docentes y estudiantes</li>
+                                <li>Recursos tecnológicos adaptados a necesidades diversas</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="5%">N°</th>
+                                        <th width="50%">Pregunta</th>
+                                        <th width="45%">Respuesta</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center align-middle">8</td>
+                                        <td class="align-middle">La institución cuenta con equipos tecnológicos suficientes y adecuados para todos los estudiantes (computadoras, tablets, etc.).</td>
+                                        <td>{{ form.p8_equipos }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">9</td>
+                                        <td class="align-middle">La conexión a internet es estable, rápida y accesible en todas las áreas de la institución.</td>
+                                        <td>{{ form.p9_internet }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">10</td>
+                                        <td class="align-middle">Las plataformas y software educativos utilizados son accesibles para personas con diferentes necesidades (lectores de pantalla, subtítulos, contrastes, etc.).</td>
+                                        <td>{{ form.p10_software }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">11</td>
+                                        <td class="align-middle">Los docentes y personal administrativo reciben capacitación regular en el uso de tecnologías accesibles e inclusivas.</td>
+                                        <td>{{ form.p11_plataformas }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">12</td>
+                                        <td class="align-middle">Los estudiantes con necesidades específicas cuentan con tecnología de asistencia adecuada (software especializado, hardware adaptado, etc.).</td>
+                                        <td>{{ form.p12_capacitacion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">13</td>
+                                        <td class="align-middle">Existe soporte técnico adecuado para el mantenimiento de equipos tecnológicos.</td>
+                                        <td>{{ form.p13_soporte }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center align-middle">14</td>
+                                        <td class="align-middle">Los recursos digitales educativos (presentaciones, videos, documentos) son diseñados considerando principios de accesibilidad universal.</td>
+                                        <td>{{ form.p14_recursos }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_observaciones" class="form-label">Observaciones</label>
+                                {{ form.observaciones }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_recomendaciones" class="form-label">Recomendaciones</label>
+                                {{ form.recomendaciones }}
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="{% url 'seleccionar_institucion' %}" class="btn btn-secondary me-3">
+                                <i class="fas fa-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Guardar Encuesta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table td {
+    vertical-align: middle;
+}
+.form-select {
+    width: 100%;
+}
+</style>
+{% endblock %}

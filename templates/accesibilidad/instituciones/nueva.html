@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Nueva Institución Educativa{% endblock %}
+
+{% block page_title %}
+    <i class="fas fa-school me-2"></i>Registrar Nueva Institución
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Datos de la Institución Educativa</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Errores en el formulario:</strong>
+                            <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_nombre_institucion" class="form-label">Nombre de la Institución *</label>
+                                {{ form.nombre_institucion }}
+                                <div class="form-text">Nombre completo de la institución educativa</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_codigo_amie" class="form-label">Código AMIE *</label>
+                                {{ form.codigo_amie }}
+                                <div class="form-text">Código único del Ministerio de Educación</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_provincia" class="form-label">Provincia *</label>
+                                {{ form.provincia }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_canton" class="form-label">Cantón *</label>
+                                {{ form.canton }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_direccion" class="form-label">Dirección *</label>
+                            {{ form.direccion }}
+                            <div class="form-text">Dirección completa de la institución</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_tipo_institucion" class="form-label">Tipo de Institución *</label>
+                                {{ form.tipo_institucion }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_telefono" class="form-label">Teléfono</label>
+                                {{ form.telefono }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Correo Electrónico</label>
+                            {{ form.email }}
+                            <div class="form-text">Ej: institucion@educacion.gob.ec</div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'lista_instituciones' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Guardar Institución
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-3">
+                <h5><i class="fas fa-info-circle me-2"></i>Información Importante</h5>
+                <ul class="mb-0">
+                    <li>El <strong>Código AMIE</strong> es un identificador único asignado por el Ministerio de Educación.</li>
+                    <li>Todos los campos marcados con * son obligatorios.</li>
+                    <li>Verifique la información antes de guardar.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

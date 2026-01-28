@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Inventario - Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4">
+        <i class="fas fa-laptop me-2"></i>Módulo de Inventario
+    </h1>
+    
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Sistema de gestión de equipos tecnológicos y mantenimientos.
+    </div>
+    
+    <!-- Estadísticas -->
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body text-center">
+                    <h6 class="card-title"><i class="fas fa-desktop me-2"></i>Total Equipos</h6>
+                    <h2>{{ total_equipos|default:"0" }}</h2>
+                    <a href="{% url 'inventario:lista_equipos' %}" class="text-white">
+                        <small>Ver todos <i class="fas fa-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body text-center">
+                    <h6 class="card-title"><i class="fas fa-check-circle me-2"></i>Operativos</h6>
+                    <h2>{{ equipos_operativos|default:"0" }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-warning shadow">
+                <div class="card-body text-center">
+                    <h6 class="card-title"><i class="fas fa-tools me-2"></i>En Mantenimiento</h6>
+                    <h2>{{ equipos_mantenimiento|default:"0" }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-info shadow">
+                <div class="card-body text-center">
+                    <h6 class="card-title"><i class="fas fa-wrench me-2"></i>Mantenimientos</h6>
+                    <h2>{{ total_mantenimientos|default:"0" }}</h2>
+                    <a href="{% url 'inventario:lista_mantenimientos' %}" class="text-white">
+                        <small>Ver todos <i class="fas fa-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Acciones rápidas -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'inventario:agregar_equipo' %}" class="btn btn-primary w-100 py-3">
+                                <i class="fas fa-plus-circle fa-2x me-3"></i>
+                                <div class="text-start">
+                                    <h6 class="mb-1">Registrar Equipo</h6>
+                                    <small class="opacity-75">Nuevo equipo tecnológico</small>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'inventario:lista_equipos' %}" class="btn btn-success w-100 py-3">
+                                <i class="fas fa-list fa-2x me-3"></i>
+                                <div class="text-start">
+                                    <h6 class="mb-1">Lista de Equipos</h6>
+                                    <small class="opacity-75">Ver todos los equipos</small>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'inventario:agregar_mantenimiento' %}" class="btn btn-warning w-100 py-3">
+                                <i class="fas fa-tools fa-2x me-3"></i>
+                                <div class="text-start">
+                                    <h6 class="mb-1">Registrar Mantenimiento</h6>
+                                    <small class="opacity-75">Nuevo mantenimiento</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Últimos mantenimientos -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Últimos Mantenimientos</h5>
+                </div>
+                <div class="card-body">
+                    {% if ultimos_mantenimientos %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Equipo</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mantenimiento in ultimos_mantenimientos %}
+                                <tr>
+                                    <td>{{ mantenimiento.fecha }}</td>
+                                    <td>{{ mantenimiento.equipo.codigo_inventario }}</td>
+                                    <td>{{ mantenimiento.tipo }}</td>
+                                    <td>{{ mantenimiento.estado_posterior }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No hay mantenimientos registrados</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

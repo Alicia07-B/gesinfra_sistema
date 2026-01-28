@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Nueva Encuesta de Barreras{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-poll me-2"></i>Nueva Encuesta de Barreras
+                    </h4>
+                </div>
+                
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Complete la encuesta para evaluar las barreras físicas y tecnológicas en la institución educativa.
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Información general -->
+                        <div class="card mb-4 border-primary">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0 text-primary">
+                                    <i class="fas fa-info-circle me-2"></i>Información General
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Institución Educativa *</label>
+                                        {{ form.institucion }}
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha de Encuesta *</label>
+                                        {{ form.fecha_encuesta }}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nombre del Encuestador</label>
+                                        {{ form.encuestador }}
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Cargo del Encuestador</label>
+                                        {{ form.cargo_encuestador }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- BARRERAS FÍSICAS -->
+                        <div class="card mb-4 border-success">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0 text-success">
+                                    <i class="fas fa-wheelchair me-2"></i>BARRERAS FÍSICAS
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-light">
+                                    <i class="fas fa-question-circle me-2"></i>
+                                    Evalúe cada aspecto de accesibilidad física seleccionando la opción correspondiente.
+                                </div>
+                                
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 60%">Pregunta</th>
+                                            <th>Siempre</th>
+                                            <th>Casi Siempre</th>
+                                            <th>A veces</th>
+                                            <th>Casi Nunca</th>
+                                            <th>Nunca</th>
+                                            <th>No aplica</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for field_name, pregunta_text in preguntas_fisicas %}
+                                        <tr>
+                                            <td>{{ pregunta_text }}</td>
+                                            {% for choice in form|get_item:field_name %}
+                                            <td class="text-center">
+                                                {{ choice.tag }}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- BARRERAS TECNOLÓGICAS -->
+                        <div class="card mb-4 border-info">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0 text-info">
+                                    <i class="fas fa-laptop me-2"></i>BARRERAS TECNOLÓGICAS
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-light">
+                                    <i class="fas fa-question-circle me-2"></i>
+                                    Evalúe cada aspecto de accesibilidad tecnológica seleccionando la opción correspondiente.
+                                </div>
+                                
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 60%">Pregunta</th>
+                                            <th>Siempre</th>
+                                            <th>Casi Siempre</th>
+                                            <th>A veces</th>
+                                            <th>Casi Nunca</th>
+                                            <th>Nunca</th>
+                                            <th>No aplica</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for field_name, pregunta_text in preguntas_tecnologicas %}
+                                        <tr>
+                                            <td>{{ pregunta_text }}</td>
+                                            {% for choice in form|get_item:field_name %}
+                                            <td class="text-center">
+                                                {{ choice.tag }}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Observaciones y recomendaciones -->
+                        <div class="card mb-4 border-warning">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0 text-warning">
+                                    <i class="fas fa-comments me-2"></i>Observaciones y Recomendaciones
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Observaciones</label>
+                                        {{ form.observaciones }}
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Recomendaciones</label>
+                                        {{ form.recomendaciones }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'accesibilidad:dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Guardar Encuesta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.radio-option {
+    margin: 0;
+    padding: 5px;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table td:first-child {
+    text-align: left;
+}
+</style>
+{% endblock %}

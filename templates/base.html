@@ -1,0 +1,738 @@
+<!-- templates/base.html - VERSIÓN MEJORADA -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gesinfra Web{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #1abc9c;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --light-bg: #f8f9fa;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar mejorada */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, #1a252f 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar .logo i {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+
+        .nav-module {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .module-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.6);
+            padding: 0 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .module-badge {
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        .nav-link-custom {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 2px 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link-custom:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .nav-link-custom.active {
+            background: rgba(52, 152, 219, 0.2);
+            color: white;
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .nav-link-custom i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-link-custom .badge {
+            margin-left: auto;
+            font-size: 0.7rem;
+        }
+
+        /* Navbar mejorada */
+        .main-navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar-collapsed + .main-navbar {
+            margin-left: 0;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .notification-bell {
+            position: relative;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger-color);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            min-height: calc(100vh - 70px);
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar-collapsed ~ .main-content {
+            margin-left: 0;
+        }
+
+        /* Cards mejoradas */
+        .module-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            height: 100%;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .module-icon.calificaciones {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+        }
+
+        .module-icon.inventario {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+        }
+
+        .module-icon.accesibilidad {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+            color: white;
+        }
+
+        .module-stat {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        /* Botones */
+        .btn-module {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-calificaciones {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border: none;
+        }
+
+        .btn-inventario {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+            border: none;
+        }
+
+        .btn-accesibilidad {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+            color: white;
+            border: none;
+        }
+
+        /* Tablas */
+        .table-module {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .table-module thead {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .table-module th {
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .table-module td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        /* Footer */
+        .main-footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+            text-align: center;
+        }
+
+        .sidebar-collapsed ~ .main-footer {
+            margin-left: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-navbar,
+            .main-content,
+            .main-footer {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Colores específicos por módulo */
+        .calificaciones-bg { background-color: rgba(52, 152, 219, 0.1); }
+        .inventario-bg { background-color: rgba(243, 156, 18, 0.1); }
+        .accesibilidad-bg { background-color: rgba(26, 188, 156, 0.1); }
+    </style>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-school"></i>
+                <span>Gesinfra</span>
+            </div>
+            <small class="text-muted d-block mt-2">Sistema Integral de Gestión</small>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- MÓDULO CALIFICACIONES -->
+            <div class="nav-module">
+                <div class="module-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>MÓDULO CALIFICACIONES</span>
+                    <span class="module-badge">Nuevo</span>
+                </div>
+                <a class="nav-link-custom {% if 'calificaciones' in request.path and 'estudiantes' in request.path %}active{% endif %}" 
+                   href="{% url 'calificaciones:lista_estudiantes' %}">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Estudiantes</span>
+                    {% with estudiantes_count=0 %}
+                    <span class="badge bg-primary">{{ estudiantes_count }}</span>
+                    {% endwith %}
+                </a>
+                <a class="nav-link-custom {% if 'calificaciones' in request.path and 'docentes' in request.path %}active{% endif %}" 
+                   href="{% url 'calificaciones:lista_docentes' %}">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Docentes</span>
+                </a>
+                <a class="nav-link-custom {% if 'calificaciones' in request.path and 'asignaturas' in request.path %}active{% endif %}" 
+                   href="{% url 'calificaciones:lista_asignaturas' %}">
+                    <i class="fas fa-book"></i>
+                    <span>Asignaturas</span>
+                </a>
+                <a class="nav-link-custom {% if 'calificaciones' in request.path and 'calificaciones' in request.path and 'gestionar' not in request.path %}active{% endif %}" 
+                   href="{% url 'calificaciones:lista_calificaciones' %}">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Calificaciones</span>
+                </a>
+                <a class="nav-link-custom {% if 'calificaciones' in request.path and 'gestionar' in request.path %}active{% endif %}" 
+                   href="{% url 'calificaciones:gestionar_calificaciones' %}">
+                    <i class="fas fa-edit"></i>
+                    <span>Gestionar Notas</span>
+                </a>
+                <a class="nav-link-custom {% if 'calificaciones' in request.path and 'matriculas' in request.path %}active{% endif %}" 
+                   href="{% url 'calificaciones:lista_matriculas' %}">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Matrículas</span>
+                </a>
+                <a class="nav-link-custom {% if 'calificaciones' in request.path and 'reportes' in request.path %}active{% endif %}" 
+                   href="{% url 'calificaciones:reportes' %}">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Reportes PDF</span>
+                </a>
+            </div>
+
+            <!-- MÓDULO INVENTARIO -->
+            <div class="nav-module">
+                <div class="module-title">
+                    <i class="fas fa-laptop"></i>
+                    <span>MÓDULO INVENTARIO</span>
+                </div>
+                <a class="nav-link-custom {% if 'inventario' in request.path and 'mantenimientos' not in request.path %}active{% endif %}" 
+                   href="/inventario/">
+                    <i class="fas fa-desktop"></i>
+                    <span>Equipos</span>
+                    <span class="badge bg-warning">15</span>
+                </a>
+                <a class="nav-link-custom {% if 'inventario/mantenimientos' in request.path %}active{% endif %}" 
+                   href="/inventario/mantenimientos/">
+                    <i class="fas fa-tools"></i>
+                    <span>Mantenimientos</span>
+                    <span class="badge bg-danger">3</span>
+                </a>
+                <a class="nav-link-custom" href="/inventario/reportes/">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reportes</span>
+                </a>
+                <a class="nav-link-custom" href="/inventario/categorias/">
+                    <i class="fas fa-tags"></i>
+                    <span>Categorías</span>
+                </a>
+            </div>
+
+            <!-- MÓDULO ACCESIBILIDAD -->
+            <div class="nav-module">
+                <div class="module-title">
+                    <i class="fas fa-universal-access"></i>
+                    <span>MÓDULO ACCESIBILIDAD</span>
+                </div>
+                <a class="nav-link-custom {% if 'accesibilidad' in request.path and 'instituciones' not in request.path and 'encuestas' not in request.path %}active{% endif %}" 
+                   href="/accesibilidad/">
+                    <i class="fas fa-poll"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="nav-link-custom {% if 'accesibilidad/encuestas/nueva' in request.path %}active{% endif %}" 
+                   href="/accesibilidad/encuestas/nueva/">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Nueva Encuesta</span>
+                </a>
+                <a class="nav-link-custom {% if 'accesibilidad/instituciones' in request.path %}active{% endif %}" 
+                   href="/accesibilidad/instituciones/">
+                    <i class="fas fa-school"></i>
+                    <span>Instituciones</span>
+                </a>
+                <a class="nav-link-custom {% if 'accesibilidad/encuestas' in request.path and 'nueva' not in request.path %}active{% endif %}" 
+                   href="/accesibilidad/encuestas/">
+                    <i class="fas fa-list"></i>
+                    <span>Encuestas</span>
+                    <span class="badge bg-success">8</span>
+                </a>
+                <a class="nav-link-custom" href="/accesibilidad/indicadores/">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Indicadores</span>
+                </a>
+            </div>
+
+            <!-- CONFIGURACIÓN Y AYUDA -->
+            <div class="nav-module mt-auto">
+                <div class="module-title">
+                    <i class="fas fa-cog"></i>
+                    <span>SISTEMA</span>
+                </div>
+                <a class="nav-link-custom" href="/configuracion/">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Configuración</span>
+                </a>
+                <a class="nav-link-custom" href="/ayuda/">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ayuda</span>
+                </a>
+                <a class="nav-link-custom text-danger" href="{% url 'logout' %}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar Principal -->
+    <nav class="main-navbar">
+        <div class="navbar-content">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <h1 class="page-title">
+                {% block page_title %}
+                    {% if 'calificaciones' in request.path %}
+                        <i class="fas fa-graduation-cap me-2"></i>Calificaciones
+                    {% elif 'inventario' in request.path %}
+                        <i class="fas fa-laptop me-2"></i>Inventario
+                    {% elif 'accesibilidad' in request.path %}
+                        <i class="fas fa-universal-access me-2"></i>Accesibilidad
+                    {% else %}
+                        Dashboard
+                    {% endif %}
+                {% endblock %}
+            </h1>
+
+            <div class="user-menu">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" 
+                       id="userDropdown" data-bs-toggle="dropdown">
+                        <div class="user-avatar">
+                            {{ user.username|first|upper }}
+                        </div>
+                        <div class="ms-2 d-none d-sm-block">
+                            <strong>{{ user.username }}</strong><br>
+                            <small class="text-muted">{{ user.email|default:"Administrador" }}</small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/perfil/"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+                        <li><a class="dropdown-item" href="/configuracion/"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}" class="mb-0">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content fade-in">
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb" class="breadcrumb-custom">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+                {% if 'calificaciones' in request.path %}
+                    <li class="breadcrumb-item"><a href="#"><i class="fas fa-graduation-cap"></i> Calificaciones</a></li>
+                {% elif 'inventario' in request.path %}
+                    <li class="breadcrumb-item"><a href="#"><i class="fas fa-laptop"></i> Inventario</a></li>
+                {% elif 'accesibilidad' in request.path %}
+                    <li class="breadcrumb-item"><a href="#"><i class="fas fa-universal-access"></i> Accesibilidad</a></li>
+                {% endif %}
+                {% block breadcrumb %}{% endblock %}
+            </ol>
+        </nav>
+
+        <!-- Mensajes del sistema -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-check-circle me-2"></i>
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                    {% elif message.tags == 'info' %}
+                        <i class="fas fa-info-circle me-2"></i>
+                    {% endif %}
+                    <div>{{ message }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Contenido específico de la página -->
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">
+                        <i class="fas fa-copyright me-1"></i> 2024 GesInfra Web - Sistema Integral
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">
+                        <span class="badge bg-info me-2">v2.1.0</span>
+                        <i class="fas fa-user-shield me-1"></i>{{ user.username }}
+                        <i class="fas fa-clock ms-3 me-1"></i>{% now "H:i" %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% else %}
+    <!-- Páginas de autenticación (login, registro, etc.) -->
+    <div class="auth-wrapper">
+        {% block auth_content %}{% endblock %}
+    </div>
+    {% endif %}
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle sidebar en móviles
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Cerrar sidebar al hacer clic fuera en móviles
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            
+            if (window.innerWidth <= 992 && 
+                !sidebar.contains(event.target) && 
+                !mobileBtn.contains(event.target) &&
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+
+        // Actualizar hora en tiempo real
+        function updateTime() {
+            const now = new Date();
+            const timeElements = document.querySelectorAll('.current-time');
+            timeElements.forEach(el => {
+                el.textContent = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            });
+        }
+        
+        // Actualizar cada minuto
+        setInterval(updateTime, 60000);
+        updateTime();
+
+        // Notificaciones
+        document.querySelector('.notification-bell').addEventListener('click', function() {
+            // Aquí iría la lógica para mostrar notificaciones
+            alert('Tienes 3 notificaciones nuevas');
+        });
+
+        // Detectar módulo activo y aplicar estilos
+        function detectActiveModule() {
+            const path = window.location.pathname;
+            const body = document.body;
+            
+            // Remover clases anteriores
+            body.classList.remove('calificaciones-bg', 'inventario-bg', 'accesibilidad-bg');
+            
+            // Aplicar nueva clase según el módulo
+            if (path.includes('/calificaciones/')) {
+                body.classList.add('calificaciones-bg');
+            } else if (path.includes('/inventario/')) {
+                body.classList.add('inventario-bg');
+            } else if (path.includes('/accesibilidad/')) {
+                body.classList.add('accesibilidad-bg');
+            }
+        }
+
+        // Ejecutar al cargar y cuando cambia la URL
+        document.addEventListener('DOMContentLoaded', detectActiveModule);
+        window.addEventListener('popstate', detectActiveModule);
+
+        // Tooltips de Bootstrap
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Auto-ocultar mensajes después de 5 segundos
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                setTimeout(function() {
+                    bsAlert.close();
+                }, 5000);
+            });
+        }, 100);
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!-- templates/accesibilidad/instituciones/lista.html -->
+{% extends 'base.html' %}
+
+{% block title %}Instituciones Educativas{% endblock %}
+
+{% block page_title %}
+    <i class="fas fa-school me-2"></i>Instituciones Educativas
+    <a href="{% url 'nueva_institucion' %}" class="btn btn-success btn-sm ms-3">
+        <i class="fas fa-plus me-1"></i>Nueva Institución
+    </a>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Listado de Instituciones Registradas</h5>
+                </div>
+                <div class="card-body">
+                    {% if instituciones %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Código AMIE</th>
+                                    <th>Provincia</th>
+                                    <th>Cantón</th>
+                                    <th>Tipo</th>
+                                    <th>Teléfono</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for institucion in instituciones %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ institucion.nombre_institucion }}</strong>
+                                        {% if institucion.email %}
+                                        <br><small class="text-muted">{{ institucion.email }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ institucion.codigo_amie }}</td>
+                                    <td>{{ institucion.provincia }}</td>
+                                    <td>{{ institucion.canton }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if institucion.tipo_institucion == 'PUBLICA' %}bg-primary
+                                            {% elif institucion.tipo_institucion == 'PRIVADA' %}bg-warning
+                                            {% elif institucion.tipo_institucion == 'FISCOMISIONAL' %}bg-info
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ institucion.get_tipo_institucion_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ institucion.telefono|default:"-" }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'detalle_institucion' institucion.id %}" 
+                                               class="btn btn-sm btn-outline-primary" 
+                                               title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'seleccionar_institucion' %}?institucion_id={{ institucion.id }}" 
+                                               class="btn btn-sm btn-outline-success" 
+                                               title="Crear encuesta">
+                                                <i class="fas fa-clipboard-check"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-school fa-4x text-muted mb-3"></i>
+                        <h4>No hay instituciones registradas</h4>
+                        <p class="text-muted">Comience registrando una nueva institución educativa.</p>
+                        <a href="{% url 'nueva_institucion' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Registrar Primera Institución
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if instituciones %}
+                <div class="card-footer text-muted">
+                    Total: {{ instituciones|length }} institución{{ instituciones|length|pluralize:"es" }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
