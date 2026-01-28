@@ -1,8 +1,15 @@
-django==4.2.7 
-reportlab==4.0.4 
-pillow==10.0.1 
-plotly==5.17.0 
-pandas==2.1.4 
-numpy==1.26.2 
-django-crispy-forms==2.0 
-crispy-bootstrap5==0.7 
+Para proceder con la instalación y ejecución del proyecto "gesinfra_sistema" en Django, el usuario deberá verificar que cuenta con Python 3.8 o superior y el gestor de paquetes pip en su sistema. 
+A continuación, debe descargar o clonar el código fuente del proyecto, crear un entorno virtual en la carpeta raíz del mismo (utilizando el comando python -m venv venv), y activarlo según su sistema operativo.
+Una vez activado el entorno, instalará todas las dependencias del proyecto ejecutando pip install -r requirements.txt, archivo que debe contener las librerías y versiones especificadas 
+  Django==4.2.7, 
+  reportlab==4.0.4, 
+  pillow==10.0.1, 
+  plotly==5.17.0, 
+  pandas==2.1.4, 
+  numpy==1.26.2, 
+  django-crispy-forms==2.0, 
+  crispy-bootstrap5==0.7).
+Posteriormente, deberá configurar la aplicación crispy_forms y crispy_bootstrap5 en la lista INSTALLED_APPS del archivo settings.py del proyecto Django, y definir las variables CRISPY_ALLOWED_TEMPLATE_PACKS
+y CRISPY_TEMPLATE_PACK como "bootstrap5". 
+Para finalizar la puesta en marcha, es necesario aplicar las migraciones de la base de datos con python manage.py migrate e iniciar el servidor de desarrollo mediante el comando python manage.py runserver, 
+tras lo cual la aplicación estará accesible en http://127.0.0.1:8000.
